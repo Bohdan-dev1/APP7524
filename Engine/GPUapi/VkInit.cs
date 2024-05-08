@@ -33,7 +33,7 @@ struct SwapChainSupportDetails
 struct Vertex
 {
     public Vector3D<float> pos;
-    public Vector3D<float> color;
+    public Vector4D<float> color;
     public Vector2D<float> textCoord;
 
     public static VertexInputBindingDescription GetBindingDescription()
@@ -166,30 +166,21 @@ unsafe class VkAPI
 
     private bool frameBufferResized = false;
     private int[] frameSize = new int[2];
+    private bool statusInit {  get; set; }
 
     private Vertex[] vertices = new Vertex[]
     {
-        new Vertex { pos = new Vector3D<float>(-150f,-150f, -1.0f), color = new Vector3D<float>(1.0f, 0.0f, 0.0f), textCoord = new Vector2D<float>(1.0f, 0.0f) },
-        new Vertex { pos = new Vector3D<float>(150f,-150f, -1.0f), color = new Vector3D<float>(0.0f, 1.0f, 0.0f), textCoord = new Vector2D<float>(0.0f, 0.0f) },
-        new Vertex { pos = new Vector3D<float>(150f,150f, -1.0f), color = new Vector3D<float>(0.0f, 0.0f, 1.0f), textCoord = new Vector2D<float>(0.0f, 1.0f) },
-        new Vertex { pos = new Vector3D<float>(-150f,150f, -1.0f), color = new Vector3D<float>(1.0f, 1.0f, 1.0f), textCoord = new Vector2D<float>(1.0f, 1.0f) },
+        new Vertex { pos = new Vector3D<float>(-75f,-75f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f, 0.0f, 1.0f), textCoord = new Vector2D<float>(1.0f, 0.0f) },
+        new Vertex { pos = new Vector3D<float>(75f,-75f, -1.0f), color = new Vector4D<float>(0.0f, 1.0f, 0.0f, 1.0f), textCoord = new Vector2D<float>(0.0f, 0.0f) },
+        new Vertex { pos = new Vector3D<float>(75f,75f, -1.0f), color = new Vector4D<float>(0.0f, 0.0f, 1.0f, 1.0f), textCoord = new Vector2D<float>(0.0f, 1.0f) },
+        new Vertex { pos = new Vector3D<float>(-75f,75f, -1.0f), color = new Vector4D<float>(1.0f, 1.0f, 1.0f, 1.0f), textCoord = new Vector2D<float>(1.0f, 1.0f) },
 
-        new Vertex { pos = new Vector3D<float>(-0.5f,-0.5f, -0.5f), color = new Vector3D<float>(1.0f, 0.0f, 0.0f), textCoord = new Vector2D<float>(1.0f, 0.0f) },
-        new Vertex { pos = new Vector3D<float>(0.5f,-0.5f, -0.5f), color = new Vector3D<float>(0.0f, 1.0f, 0.0f), textCoord = new Vector2D<float>(0.0f, 0.0f) },
-        new Vertex { pos = new Vector3D<float>(0.5f,0.5f, -0.5f), color = new Vector3D<float>(0.0f, 0.0f, 1.0f), textCoord = new Vector2D<float>(0.0f, 1.0f) },
-        new Vertex { pos = new Vector3D<float>(-0.5f,0.5f, -0.5f), color = new Vector3D<float>(1.0f, 1.0f, 1.0f), textCoord = new Vector2D<float>(1.0f, 1.0f) },
 
-        new Vertex { pos = new Vector3D<float>(-110f,-110f, -0.9f), color = new Vector3D<float>(1.0f, 0.0f, 0.0f), textCoord = new Vector2D<float>(1.0f, 0.0f) },
-        new Vertex { pos = new Vector3D<float>(110f,-110f, -0.9f), color = new Vector3D<float>(0.0f, 1.0f, 0.0f), textCoord = new Vector2D<float>(0.0f, 0.0f) },
-        new Vertex { pos = new Vector3D<float>(110f,110f, -0.9f), color = new Vector3D<float>(0.0f, 0.0f, 1.0f), textCoord = new Vector2D<float>(0.0f, 1.0f) },
-        new Vertex { pos = new Vector3D<float>(-110f,110f, -0.9f), color = new Vector3D<float>(1.0f, 1.0f, 1.0f), textCoord = new Vector2D<float>(1.0f, 1.0f) },
     };
 
     private ushort[] indices = new ushort[]
     {
         0, 1, 2, 2, 3, 0,
-        4, 5, 6, 6, 7, 4,
-        8, 9, 10, 10, 11, 8
     };
 
     /*
@@ -198,13 +189,21 @@ unsafe class VkAPI
         8, 9, 10, 10, 11, 8
      */
 
+    public VkAPI()
+    {
+        this.Run();
+    }
+
     public void Run()
     {
         InitWindow();
         InitVulkan();
         MainLoop();
+        this.statusInit = true;
         CleanUp();
     }
+
+    public bool GetStatusInit() { return statusInit; }
 
     private void InitWindow()
     {
@@ -1639,7 +1638,7 @@ unsafe class VkAPI
         {
             model = Matrix4X4<float>.Identity * Matrix4X4.CreateFromAxisAngle<float>(new Vector3D<float>(0, 0, 0), time * Scalar.DegreesToRadians(0.0f)),
             view = Matrix4X4.CreateLookAt(new Vector3D<float>(0, 0, 0), new Vector3D<float>(0, 0, -1), new Vector3D<float>(0, 1, 0)),
-            proj = Matrix4X4.CreateOrthographicOffCenter(0,swapChainExtent.Width, 0,swapChainExtent.Height, 0.1f, 10.0f),
+            proj = Matrix4X4.CreateOrthographic(swapChainExtent.Width, swapChainExtent.Height, 0.1f, 10.0f),
         };
         ubo.proj.M22 *= -1;
 
