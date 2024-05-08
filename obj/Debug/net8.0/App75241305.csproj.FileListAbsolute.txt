@@ -61,3 +61,4 @@ D:\VulkanAPI_Csharp\App75241305\App75241305\obj\Debug\net8.0\refint\App75241305.
 D:\VulkanAPI_Csharp\App75241305\App75241305\obj\Debug\net8.0\App75241305.pdb
 D:\VulkanAPI_Csharp\App75241305\App75241305\obj\Debug\net8.0\App75241305.genruntimeconfig.cache
 D:\VulkanAPI_Csharp\App75241305\App75241305\obj\Debug\net8.0\ref\App75241305.dll
+D:\VulkanAPI_Csharp\App75241305\App75241305\obj\Debug\net8.0\App75241305.sourcelink.json

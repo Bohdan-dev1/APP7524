@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Silk.NET.Core;
 using Silk.NET.Core.Native;
@@ -164,23 +165,24 @@ unsafe class VkAPI
     private int currentFrame = 0;
 
     private bool frameBufferResized = false;
+    private int[] frameSize = new int[2];
 
     private Vertex[] vertices = new Vertex[]
     {
-        new Vertex { pos = new Vector3D<float>(-0.5f,-0.5f, 0.0f), color = new Vector3D<float>(1.0f, 0.0f, 0.0f), textCoord = new Vector2D<float>(1.0f, 0.0f) },
-        new Vertex { pos = new Vector3D<float>(0.5f,-0.5f, 0.0f), color = new Vector3D<float>(0.0f, 1.0f, 0.0f), textCoord = new Vector2D<float>(0.0f, 0.0f) },
-        new Vertex { pos = new Vector3D<float>(0.5f,0.5f, 0.0f), color = new Vector3D<float>(0.0f, 0.0f, 1.0f), textCoord = new Vector2D<float>(0.0f, 1.0f) },
-        new Vertex { pos = new Vector3D<float>(-0.5f,0.5f, 0.0f), color = new Vector3D<float>(1.0f, 1.0f, 1.0f), textCoord = new Vector2D<float>(1.0f, 1.0f) },
+        new Vertex { pos = new Vector3D<float>(-150f,-150f, -1.0f), color = new Vector3D<float>(1.0f, 0.0f, 0.0f), textCoord = new Vector2D<float>(1.0f, 0.0f) },
+        new Vertex { pos = new Vector3D<float>(150f,-150f, -1.0f), color = new Vector3D<float>(0.0f, 1.0f, 0.0f), textCoord = new Vector2D<float>(0.0f, 0.0f) },
+        new Vertex { pos = new Vector3D<float>(150f,150f, -1.0f), color = new Vector3D<float>(0.0f, 0.0f, 1.0f), textCoord = new Vector2D<float>(0.0f, 1.0f) },
+        new Vertex { pos = new Vector3D<float>(-150f,150f, -1.0f), color = new Vector3D<float>(1.0f, 1.0f, 1.0f), textCoord = new Vector2D<float>(1.0f, 1.0f) },
 
         new Vertex { pos = new Vector3D<float>(-0.5f,-0.5f, -0.5f), color = new Vector3D<float>(1.0f, 0.0f, 0.0f), textCoord = new Vector2D<float>(1.0f, 0.0f) },
         new Vertex { pos = new Vector3D<float>(0.5f,-0.5f, -0.5f), color = new Vector3D<float>(0.0f, 1.0f, 0.0f), textCoord = new Vector2D<float>(0.0f, 0.0f) },
         new Vertex { pos = new Vector3D<float>(0.5f,0.5f, -0.5f), color = new Vector3D<float>(0.0f, 0.0f, 1.0f), textCoord = new Vector2D<float>(0.0f, 1.0f) },
         new Vertex { pos = new Vector3D<float>(-0.5f,0.5f, -0.5f), color = new Vector3D<float>(1.0f, 1.0f, 1.0f), textCoord = new Vector2D<float>(1.0f, 1.0f) },
 
-        new Vertex { pos = new Vector3D<float>(-0.5f,-0.5f, -1f), color = new Vector3D<float>(1.0f, 0.0f, 0.0f), textCoord = new Vector2D<float>(1.0f, 0.0f) },
-        new Vertex { pos = new Vector3D<float>(0.5f,-0.5f, -1f), color = new Vector3D<float>(0.0f, 1.0f, 0.0f), textCoord = new Vector2D<float>(0.0f, 0.0f) },
-        new Vertex { pos = new Vector3D<float>(0.5f,0.5f, -1f), color = new Vector3D<float>(0.0f, 0.0f, 1.0f), textCoord = new Vector2D<float>(0.0f, 1.0f) },
-        new Vertex { pos = new Vector3D<float>(-0.5f,0.5f, -1f), color = new Vector3D<float>(1.0f, 1.0f, 1.0f), textCoord = new Vector2D<float>(1.0f, 1.0f) },
+        new Vertex { pos = new Vector3D<float>(-110f,-110f, -0.9f), color = new Vector3D<float>(1.0f, 0.0f, 0.0f), textCoord = new Vector2D<float>(1.0f, 0.0f) },
+        new Vertex { pos = new Vector3D<float>(110f,-110f, -0.9f), color = new Vector3D<float>(0.0f, 1.0f, 0.0f), textCoord = new Vector2D<float>(0.0f, 0.0f) },
+        new Vertex { pos = new Vector3D<float>(110f,110f, -0.9f), color = new Vector3D<float>(0.0f, 0.0f, 1.0f), textCoord = new Vector2D<float>(0.0f, 1.0f) },
+        new Vertex { pos = new Vector3D<float>(-110f,110f, -0.9f), color = new Vector3D<float>(1.0f, 1.0f, 1.0f), textCoord = new Vector2D<float>(1.0f, 1.0f) },
     };
 
     private ushort[] indices = new ushort[]
@@ -189,6 +191,12 @@ unsafe class VkAPI
         4, 5, 6, 6, 7, 4,
         8, 9, 10, 10, 11, 8
     };
+
+    /*
+     
+        4, 5, 6, 6, 7, 4,
+        8, 9, 10, 10, 11, 8
+     */
 
     public void Run()
     {
@@ -201,10 +209,11 @@ unsafe class VkAPI
     private void InitWindow()
     {
         //Create a window.
+        Process currentProcess = Process.GetCurrentProcess();
         var options = WindowOptions.DefaultVulkan with
         {
             Size = new Vector2D<int>(WIDTH, HEIGHT),
-            Title = "Vulkan",
+            Title = "Vulkan API/ PID -> " + currentProcess.Id ,
         };
 
         window = Window.Create(options);
@@ -221,6 +230,8 @@ unsafe class VkAPI
     private void FramebufferResizeCallback(Vector2D<int> obj)
     {
         frameBufferResized = true;
+        this.frameSize[0] = obj.X;
+        this.frameSize[1] = obj.Y;
     }
 
     private void InitVulkan()
@@ -1626,12 +1637,13 @@ unsafe class VkAPI
 
         UniformBufferObject ubo = new()
         {
-            model = Matrix4X4<float>.Identity * Matrix4X4.CreateFromAxisAngle<float>(new Vector3D<float>(0, 0, 1), time * Scalar.DegreesToRadians(90.0f)),
-            view = Matrix4X4.CreateLookAt(new Vector3D<float>(2, 2, 2), new Vector3D<float>(0, 0, 0), new Vector3D<float>(0, 0, 1)),
-            proj = Matrix4X4.CreatePerspectiveFieldOfView(Scalar.DegreesToRadians(45.0f), (float)swapChainExtent.Width / swapChainExtent.Height, 0.1f, 10.0f),
+            model = Matrix4X4<float>.Identity * Matrix4X4.CreateFromAxisAngle<float>(new Vector3D<float>(0, 0, 0), time * Scalar.DegreesToRadians(0.0f)),
+            view = Matrix4X4.CreateLookAt(new Vector3D<float>(0, 0, 0), new Vector3D<float>(0, 0, -1), new Vector3D<float>(0, 1, 0)),
+            proj = Matrix4X4.CreateOrthographicOffCenter(0,swapChainExtent.Width, 0,swapChainExtent.Height, 0.1f, 10.0f),
         };
         ubo.proj.M22 *= -1;
 
+            //proj = Matrix4X4.CreatePerspectiveFieldOfView(Scalar.DegreesToRadians(45.0f), (float)swapChainExtent.Width / swapChainExtent.Height, 0.1f, 10.0f),
 
         void* data;
         vk!.MapMemory(device, uniformBuffersMemory![currentImage], 0, (ulong)Unsafe.SizeOf<UniformBufferObject>(), 0, &data);
