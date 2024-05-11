@@ -9,6 +9,8 @@
       "App75241305/1.0.0": {
         "dependencies": {
           "NLog": "5.3.2",
+          "SharpFont": "4.0.1",
+          "SharpFont.Dependencies": "2.6.0",
           "Silk.NET": "2.21.0",
           "Silk.NET.Assimp": "2.21.0",
           "Silk.NET.Vulkan.Extensions.EXT": "2.21.0",
@@ -48,6 +50,12 @@
           }
         }
       },
+      "SharpFont/4.0.1": {
+        "dependencies": {
+          "SharpFont.Dependencies": "2.6.0"
+        }
+      },
+      "SharpFont.Dependencies/2.6.0": {},
       "Silk.NET/2.21.0": {
         "dependencies": {
           "Silk.NET.Core": "2.21.0",
@@ -466,6 +474,20 @@
       "sha512": "sha512-cQRQZuDMjSyMe9EQBnI9v55YAMMz8GAfFd6fFJ6tc/kXnG7Hze8p1I8MgvWSBG6E36wA8vSxRrlm8uSIG+SENg==",
       "path": "nlog/5.3.2",
       "hashPath": "nlog.5.3.2.nupkg.sha512"
+    },
+    "SharpFont/4.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yoFLcuWMYdBGB4YLq3bvzrctItJIb+EuK7C7PGgBzqsKxx5UXUwTce64kbvuDQWlMf6p4uQwDm5t2rQdZ9EkyA==",
+      "path": "sharpfont/4.0.1",
+      "hashPath": "sharpfont.4.0.1.nupkg.sha512"
+    },
+    "SharpFont.Dependencies/2.6.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MuR0lFIZI1pSw0QAgdzK0teIUkkMjh4Q/3Hm06BQKuOiSmbJCglox5Ny+8XK6VQDkOrw5cuMw85K3HdTEYWk+w==",
+      "path": "sharpfont.dependencies/2.6.0",
+      "hashPath": "sharpfont.dependencies.2.6.0.nupkg.sha512"
     },
     "Silk.NET/2.21.0": {
       "type": "package",

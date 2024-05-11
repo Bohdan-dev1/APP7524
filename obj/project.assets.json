@@ -57,6 +57,21 @@
           }
         }
       },
+      "SharpFont/4.0.1": {
+        "type": "package",
+        "dependencies": {
+          "SharpFont.Dependencies": "(, )"
+        },
+        "build": {
+          "build/SharpFont.props": {}
+        }
+      },
+      "SharpFont.Dependencies/2.6.0": {
+        "type": "package",
+        "build": {
+          "build/SharpFont.Dependencies.props": {}
+        }
+      },
       "Silk.NET/2.21.0": {
         "type": "package",
         "dependencies": {
@@ -749,6 +764,42 @@
         "lib/netstandard2.0/NLog.xml",
         "nlog.5.3.2.nupkg.sha512",
         "nlog.nuspec"
+      ]
+    },
+    "SharpFont/4.0.1": {
+      "sha512": "yoFLcuWMYdBGB4YLq3bvzrctItJIb+EuK7C7PGgBzqsKxx5UXUwTce64kbvuDQWlMf6p4uQwDm5t2rQdZ9EkyA==",
+      "type": "package",
+      "path": "sharpfont/4.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "build/SharpFont.props",
+        "config/SharpFont.dll.config",
+        "lib/net45/SharpFont.dll",
+        "lib/net45/SharpFont.dll.config",
+        "lib/net45/SharpFont.xml",
+        "sharpfont.4.0.1.nupkg.sha512",
+        "sharpfont.nuspec"
+      ]
+    },
+    "SharpFont.Dependencies/2.6.0": {
+      "sha512": "MuR0lFIZI1pSw0QAgdzK0teIUkkMjh4Q/3Hm06BQKuOiSmbJCglox5Ny+8XK6VQDkOrw5cuMw85K3HdTEYWk+w==",
+      "type": "package",
+      "path": "sharpfont.dependencies/2.6.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "bin/msvc10/x64/freetype6.dll",
+        "bin/msvc10/x86/freetype6.dll",
+        "bin/msvc11/x64/freetype6.dll",
+        "bin/msvc11/x86/freetype6.dll",
+        "bin/msvc12/x64/freetype6.dll",
+        "bin/msvc12/x86/freetype6.dll",
+        "bin/msvc9/x64/freetype6.dll",
+        "bin/msvc9/x86/freetype6.dll",
+        "build/SharpFont.Dependencies.props",
+        "sharpfont.dependencies.2.6.0.nupkg.sha512",
+        "sharpfont.dependencies.nuspec"
       ]
     },
     "Silk.NET/2.21.0": {
@@ -1477,6 +1528,8 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "NLog >= 5.3.2",
+      "SharpFont >= 4.0.1",
+      "SharpFont.Dependencies >= 2.6.0",
       "Silk.NET >= 2.21.0",
       "Silk.NET.Assimp >= 2.21.0",
       "Silk.NET.Vulkan.Extensions.EXT >= 2.21.0",
@@ -1537,6 +1590,14 @@
           "NLog": {
             "target": "Package",
             "version": "[5.3.2, )"
+          },
+          "SharpFont": {
+            "target": "Package",
+            "version": "[4.0.1, )"
+          },
+          "SharpFont.Dependencies": {
+            "target": "Package",
+            "version": "[2.6.0, )"
           },
           "Silk.NET": {
             "target": "Package",

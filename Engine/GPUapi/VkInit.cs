@@ -1016,9 +1016,9 @@ private bool statusInit {  get; set; }
         return FindSupportedFormat(new[] { Format.D32Sfloat, Format.D32SfloatS8Uint, Format.D24UnormS8Uint }, ImageTiling.Optimal, FormatFeatureFlags.DepthStencilAttachmentBit);
     }
 
-    private void CreateTextureImage()
+    public void CreateTextureImage(String pathTexture = "")
     {
-        using var img = SixLabors.ImageSharp.Image.Load<SixLabors.ImageSharp.PixelFormats.Rgba32>(".\\Assets\\Textures\\def.png");
+        using var img = SixLabors.ImageSharp.Image.Load<SixLabors.ImageSharp.PixelFormats.Rgba32>(pathTexture == "" ? ".\\Assets\\Textures\\def.png" : pathTexture);
 
         ulong imageSize = (ulong)(img.Width * img.Height * img.PixelType.BitsPerPixel / 8);
 

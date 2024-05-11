@@ -10,7 +10,7 @@ namespace App75241305.Engine
         private List<Vertex> vertices = new List<Vertex>();
         private List<ushort[]> indexListVertex = new List<ushort[]>();
 
-        private VkAPI vkAPI;
+        protected VkAPI vkAPI;
         public void Main()
         {
             BuildUI();

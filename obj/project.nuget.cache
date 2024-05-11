@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "g/lBnqIfzGsFtgKyXCLxmMNV9tjt9fAnv0kSoy2uvwZKWDF7o1lnlqTGT8S/nlN1PHbJCPpIw5RljeUh279mHg==",
+  "dgSpecHash": "/WBmjGBWHBYDkA/y1eYSN57H/p6ti793YXKmVXYaTlIliz85LVPfzlxql0WzQpVsqckLsLt1dt4n65ebnsg5jw==",
   "success": true,
   "projectFilePath": "D:\\VulkanAPI_Csharp\\App75241305\\App75241305\\App75241305.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,8 @@
     "C:\\Users\\Hatsumi_Mihari\\.nuget\\packages\\microsoft.dotnet.platformabstractions\\3.1.6\\microsoft.dotnet.platformabstractions.3.1.6.nupkg.sha512",
     "C:\\Users\\Hatsumi_Mihari\\.nuget\\packages\\microsoft.extensions.dependencymodel\\8.0.0\\microsoft.extensions.dependencymodel.8.0.0.nupkg.sha512",
     "C:\\Users\\Hatsumi_Mihari\\.nuget\\packages\\nlog\\5.3.2\\nlog.5.3.2.nupkg.sha512",
+    "C:\\Users\\Hatsumi_Mihari\\.nuget\\packages\\sharpfont\\4.0.1\\sharpfont.4.0.1.nupkg.sha512",
+    "C:\\Users\\Hatsumi_Mihari\\.nuget\\packages\\sharpfont.dependencies\\2.6.0\\sharpfont.dependencies.2.6.0.nupkg.sha512",
     "C:\\Users\\Hatsumi_Mihari\\.nuget\\packages\\silk.net\\2.21.0\\silk.net.2.21.0.nupkg.sha512",
     "C:\\Users\\Hatsumi_Mihari\\.nuget\\packages\\silk.net.assimp\\2.21.0\\silk.net.assimp.2.21.0.nupkg.sha512",
     "C:\\Users\\Hatsumi_Mihari\\.nuget\\packages\\silk.net.core\\2.21.0\\silk.net.core.2.21.0.nupkg.sha512",

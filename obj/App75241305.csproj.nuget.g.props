@@ -15,5 +15,7 @@
   </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)sixlabors.imagesharp\3.1.4\build\SixLabors.ImageSharp.props" Condition="Exists('$(NuGetPackageRoot)sixlabors.imagesharp\3.1.4\build\SixLabors.ImageSharp.props')" />
+    <Import Project="$(NuGetPackageRoot)sharpfont.dependencies\2.6.0\build\SharpFont.Dependencies.props" Condition="Exists('$(NuGetPackageRoot)sharpfont.dependencies\2.6.0\build\SharpFont.Dependencies.props')" />
+    <Import Project="$(NuGetPackageRoot)sharpfont\4.0.1\build\SharpFont.props" Condition="Exists('$(NuGetPackageRoot)sharpfont\4.0.1\build\SharpFont.props')" />
   </ImportGroup>
 </Project>
