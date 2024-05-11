@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using App75241305.Engine;
 using Silk.NET.Core;
 using Silk.NET.Core.Native;
 using Silk.NET.Maths;
@@ -8,9 +9,11 @@ using Silk.NET.Vulkan;
 using Silk.NET.Vulkan.Extensions.EXT;
 using Silk.NET.Vulkan.Extensions.KHR;
 using Silk.NET.Windowing;
+using App75241305.Engine;
 using Buffer = Silk.NET.Vulkan.Buffer;
 using Image = Silk.NET.Vulkan.Image;
 using Semaphore = Silk.NET.Vulkan.Semaphore;
+using System;
 
 struct QueueFamilyIndices
 {
@@ -35,6 +38,7 @@ struct Vertex
     public Vector3D<float> pos;
     public Vector4D<float> color;
     public Vector2D<float> textCoord;
+    public float texturingFlag;
 
     public static VertexInputBindingDescription GetBindingDescription()
     {
@@ -63,7 +67,7 @@ struct Vertex
             {
                 Binding = 0,
                 Location = 1,
-                Format = Format.R32G32B32Sfloat,
+                Format = Format.R32G32B32A32Sfloat,
                 Offset = (uint)Marshal.OffsetOf<Vertex>(nameof(color)),
             },
             new VertexInputAttributeDescription()
@@ -72,6 +76,13 @@ struct Vertex
                 Location = 2,
                 Format = Format.R32G32Sfloat,
                 Offset = (uint)Marshal.OffsetOf<Vertex>(nameof(textCoord)),
+            },
+            new VertexInputAttributeDescription()
+            {
+                Binding = 0,
+                Location = 3,
+                Format = Format.R32Sfloat,
+                Offset = (uint)Marshal.OffsetOf<Vertex>(nameof(texturingFlag)),
             }
         };
 
@@ -84,7 +95,12 @@ struct UniformBufferObject
     public Matrix4X4<float> model;
     public Matrix4X4<float> view;
     public Matrix4X4<float> proj;
+
+    //Basic Options Shader
+
+    
 }
+
 
 unsafe class VkAPI
 {
@@ -163,34 +179,21 @@ unsafe class VkAPI
     private Fence[]? inFlightFences;
     private Fence[]? imagesInFlight;
     private int currentFrame = 0;
+    private Engine linkEngine;
 
     private bool frameBufferResized = false;
     private int[] frameSize = new int[2];
-    private bool statusInit {  get; set; }
+private bool statusInit {  get; set; }
 
-    private Vertex[] vertices = new Vertex[]
+    private Vertex[] vertices;
+
+    private ushort[] indices;
+    
+    public VkAPI(Engine linkEngine)
     {
-        new Vertex { pos = new Vector3D<float>(-75f,-75f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f, 0.0f, 1.0f), textCoord = new Vector2D<float>(1.0f, 0.0f) },
-        new Vertex { pos = new Vector3D<float>(75f,-75f, -1.0f), color = new Vector4D<float>(0.0f, 1.0f, 0.0f, 1.0f), textCoord = new Vector2D<float>(0.0f, 0.0f) },
-        new Vertex { pos = new Vector3D<float>(75f,75f, -1.0f), color = new Vector4D<float>(0.0f, 0.0f, 1.0f, 1.0f), textCoord = new Vector2D<float>(0.0f, 1.0f) },
-        new Vertex { pos = new Vector3D<float>(-75f,75f, -1.0f), color = new Vector4D<float>(1.0f, 1.0f, 1.0f, 1.0f), textCoord = new Vector2D<float>(1.0f, 1.0f) },
-
-
-    };
-
-    private ushort[] indices = new ushort[]
-    {
-        0, 1, 2, 2, 3, 0,
-    };
-
-    /*
-     
-        4, 5, 6, 6, 7, 4,
-        8, 9, 10, 10, 11, 8
-     */
-
-    public VkAPI()
-    {
+        this.linkEngine = linkEngine;
+        this.vertices = this.linkEngine.GetVertex();
+        this.indices = this.linkEngine.GetIndexArray();
         this.Run();
     }
 
@@ -345,7 +348,7 @@ unsafe class VkAPI
         window?.Dispose();
     }
 
-    private void RecreateSwapChain()
+    public void RecreateSwapChain()
     {
         Vector2D<int> framebufferSize = window!.FramebufferSize;
 
@@ -728,7 +731,7 @@ unsafe class VkAPI
             DescriptorCount = 1,
             DescriptorType = DescriptorType.UniformBuffer,
             PImmutableSamplers = null,
-            StageFlags = ShaderStageFlags.VertexBit,
+            StageFlags = ShaderStageFlags.VertexBit & ShaderStageFlags.FragmentBit,
         };
 
         DescriptorSetLayoutBinding samplerLayoutBinding = new()
@@ -869,7 +872,13 @@ unsafe class VkAPI
             PipelineColorBlendAttachmentState colorBlendAttachment = new()
             {
                 ColorWriteMask = ColorComponentFlags.RBit | ColorComponentFlags.GBit | ColorComponentFlags.BBit | ColorComponentFlags.ABit,
-                BlendEnable = false,
+                BlendEnable = true,
+                SrcColorBlendFactor = BlendFactor.SrcAlpha,
+                DstColorBlendFactor = BlendFactor.OneMinusSrcAlpha,
+                ColorBlendOp = BlendOp.Add,
+                SrcAlphaBlendFactor = BlendFactor.One,
+                DstAlphaBlendFactor = BlendFactor.Zero,
+                AlphaBlendOp = BlendOp.Add
             };
 
             PipelineColorBlendStateCreateInfo colorBlending = new()
@@ -1629,11 +1638,10 @@ unsafe class VkAPI
         }
     }
 
-    private void UpdateUniformBuffer(uint currentImage)
+    public void UpdateUniformBuffer(uint currentImage)
     {
         //Silk Window has timing information so we are skipping the time code.
         var time = (float)window!.Time;
-
         UniformBufferObject ubo = new()
         {
             model = Matrix4X4<float>.Identity * Matrix4X4.CreateFromAxisAngle<float>(new Vector3D<float>(0, 0, 0), time * Scalar.DegreesToRadians(0.0f)),
@@ -1641,12 +1649,10 @@ unsafe class VkAPI
             proj = Matrix4X4.CreateOrthographic(swapChainExtent.Width, swapChainExtent.Height, 0.1f, 10.0f),
         };
         ubo.proj.M22 *= -1;
-
-            //proj = Matrix4X4.CreatePerspectiveFieldOfView(Scalar.DegreesToRadians(45.0f), (float)swapChainExtent.Width / swapChainExtent.Height, 0.1f, 10.0f),
-
+    
         void* data;
-        vk!.MapMemory(device, uniformBuffersMemory![currentImage], 0, (ulong)Unsafe.SizeOf<UniformBufferObject>(), 0, &data);
-        new Span<UniformBufferObject>(data, 1)[0] = ubo;
+        vk!.MapMemory(device, uniformBuffersMemory![currentImage], 0,(ulong)Unsafe.SizeOf<UniformBufferObject>(), 0, &data);
+        new Span<UniformBufferObject>(data, (int)(ulong)Unsafe.SizeOf<UniformBufferObject>())[0] = ubo;
         vk!.UnmapMemory(device, uniformBuffersMemory![currentImage]);
 
     }

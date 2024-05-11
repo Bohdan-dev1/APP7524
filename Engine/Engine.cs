@@ -1,96 +1,100 @@
 ﻿using App75241305.Engine;
-using Silk.NET.Maths;
 using Silk.NET.Vulkan;
-using System.Numerics;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using Silk.NET.Maths;
 
 namespace App75241305.Engine
 
 {
-    struct Vertex
+    internal unsafe class Engine 
     {
-        public Vector3D<float> pos;
-        public Vector4D<float> color;
-        public Vector2D<float> textCoord;
+        private List<Vertex> vertices = new List<Vertex>();
+        private List<ushort[]> indexListVertex = new List<ushort[]>();
 
-        public static VertexInputBindingDescription GetBindingDescription()
-        {
-            VertexInputBindingDescription bindingDescription = new()
-            {
-                Binding = 0,
-                Stride = (uint)Unsafe.SizeOf<Vertex>(),
-                InputRate = VertexInputRate.Vertex,
-            };
-
-            return bindingDescription;
-        }
-
-        public static VertexInputAttributeDescription[] GetAttributeDescriptions()
-        {
-            var attributeDescriptions = new[]
-            {
-            new VertexInputAttributeDescription()
-            {
-                Binding = 0,
-                Location = 0,
-                Format = Format.R32G32B32Sfloat,
-                Offset = (uint)Marshal.OffsetOf<Vertex>(nameof(pos)),
-            },
-            new VertexInputAttributeDescription()
-            {
-                Binding = 0,
-                Location = 1,
-                Format = Format.R32G32B32Sfloat,
-                Offset = (uint)Marshal.OffsetOf<Vertex>(nameof(color)),
-            },
-            new VertexInputAttributeDescription()
-            {
-                Binding = 0,
-                Location = 2,
-                Format = Format.R32G32Sfloat,
-                Offset = (uint)Marshal.OffsetOf<Vertex>(nameof(textCoord)),
-            }
-        };
-
-            return attributeDescriptions;
-        }
-    }
-    struct UniformBufferObject
-    {
-        //Basic Options
-        public Vector4D<float> OBJcolor;
-        public string texturePath;
-    }
-    internal unsafe class Engine
-    {
-
-
-        private UniformBufferObject UBO;
-        private List<Vertex[]> vertices;
-        private List<int[]> indexListVertex;
+        private VkAPI vkAPI;
         public void Main()
         {
-
-            VkAPI vkAPI = new VkAPI();
+            BuildUI();
+            vkAPI = new VkAPI(this);
             if (!vkAPI.GetStatusInit()) {
                 Console.WriteLine("Error Init API Vulkan");
                 return;
             }
 
-            UBO = new UniformBufferObject();
-            initBaseUBO();
         }
 
-        protected void AddOBJ(Vertex[] vertex, int indexDraw)
+        protected void AddOBJ(Vertex[] vertex)
         {
+            foreach(Vertex v in vertex) this.vertices.Add(v);
+            ushort[] arrayDraw = new ushort[6];
+
+
+            if (this.indexListVertex.Count != 0) {
+                ushort startIndex = this.indexListVertex[this.indexListVertex.Count - 1][4];
+                arrayDraw[0] = (ushort)(startIndex + 1);
+                arrayDraw[1] = (ushort)(startIndex + 2);
+                arrayDraw[2] = (ushort)(startIndex + 3);
+                arrayDraw[3] = (ushort)(startIndex + 3);
+                arrayDraw[4] = (ushort)(startIndex + 4);
+                arrayDraw[5] = (ushort)(startIndex + 1);
+                this.indexListVertex.Add(arrayDraw);
+                return;
+            }
+
+            arrayDraw[0] = 0;
+            arrayDraw[1] = 1;
+            arrayDraw[2] = 2;
+            arrayDraw[3] = 2;
+            arrayDraw[4] = 3;
+            arrayDraw[5] = 0;
+            this.indexListVertex.Add(arrayDraw);
 
         }
-        private void initBaseUBO()
+
+        public Vertex[] GetVertex()
         {
-            this.UBO.OBJcolor = new Vector4D<float>(0.0f, 0.0f, 0.0f, 0.0f );
-            this.UBO.texturePath = "";
+            return this.vertices.ToArray();
         }
+
+        public ushort[] GetIndexArray ()
+        {
+            List<ushort> temp = new List<ushort>();
+            foreach (ushort[] i in this.indexListVertex)
+            {
+                foreach (ushort j in i) temp.Add(j);
+            }
+            return temp.ToArray();
+        }
+
+          private void BuildUI()
+        {
+
+
+            AddOBJ(new Vertex[] {
+                        new Vertex { pos = new Vector3D<float>(-125f,-75f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f)},
+        new Vertex { pos = new Vector3D<float>(65f, -75f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f)},
+        new Vertex { pos = new Vector3D<float>(65f,85f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f)},
+        new Vertex { pos = new Vector3D<float>(-125f,85f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f)},
+            });
+
+            AddOBJ(new Vertex[] {
+                        new Vertex { pos = new Vector3D<float>(-20f,-20f, -1.2f), color = new Vector4D<float>(0.0f, 1.0f ,0.0f , 1.0f),  textCoord = new Vector2D<float>(1.0f, 0.0f), texturingFlag = 1f},
+        new Vertex { pos = new Vector3D<float>(20f, -20f, -1.2f), color = new Vector4D<float>(0.0f, 1.0f ,0.0f , 1.0f), textCoord = new Vector2D<float>(0.0f, 0.0f), texturingFlag = 1f},
+        new Vertex { pos = new Vector3D<float>(20f,20f, -1.2f), color = new Vector4D<float>(0.0f, 1.0f ,0.0f , 1.0f), textCoord = new Vector2D<float>(0.0f, 1.0f), texturingFlag = 1f},
+        new Vertex { pos = new Vector3D<float>(-20f,20f, -1.2f), color = new Vector4D<float>(0.0f, 1.0f ,0.0f , 1.0f), textCoord = new Vector2D<float>(1.0f, 1.0f), texturingFlag = 1f},
+            });
+
+            AddOBJ(new Vertex[] {
+                        new Vertex { pos = new Vector3D<float>(-75f,-75f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.2f) },
+        new Vertex { pos = new Vector3D<float>(75f,-75f, -1.0f), color = new Vector4D<float>(1.0f, 1.0f , 0.0f , 0.2f)},
+        new Vertex { pos = new Vector3D<float>(75f,75f, -1.0f), color =new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f)},
+        new Vertex { pos = new Vector3D<float>(-75f,75f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f)},
+            });
+
+
+        }
+
+
+        
     }
+
 }
