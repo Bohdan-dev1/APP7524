@@ -183,17 +183,15 @@ unsafe class VkAPI
 
     private bool frameBufferResized = false;
     private int[] frameSize = new int[2];
-private bool statusInit {  get; set; }
+    private bool statusInit {  get; set; }
 
-    private Vertex[] vertices;
+    private Vertex[] vertices = new Vertex[1024];
 
-    private ushort[] indices;
+    private ushort[] indices = new ushort[1024];
     
     public VkAPI(Engine linkEngine)
     {
         this.linkEngine = linkEngine;
-        this.vertices = this.linkEngine.GetVertex();
-        this.indices = this.linkEngine.GetIndexArray();
         this.Run();
     }
 
@@ -261,10 +259,14 @@ private bool statusInit {  get; set; }
         CreateDescriptorSets();
         CreateCommandBuffers();
         CreateSyncObjects();
+        
     }
 
     private void MainLoop()
     {
+        this.linkEngine.BuildUI();
+        this.vertices = this.linkEngine.GetVertex();
+        this.indices = this.linkEngine.GetIndexArray();
         window!.Render += DrawFrame;
         window!.Run();
         vk!.DeviceWaitIdle(device);
@@ -1659,6 +1661,7 @@ private bool statusInit {  get; set; }
 
     private void DrawFrame(double delta)
     {
+
         vk!.WaitForFences(device, 1, inFlightFences![currentFrame], true, ulong.MaxValue);
 
         uint imageIndex = 0;

@@ -9,13 +9,12 @@
       "App75241305/1.0.0": {
         "dependencies": {
           "NLog": "5.3.2",
-          "SharpFont": "4.0.1",
-          "SharpFont.Dependencies": "2.6.0",
           "Silk.NET": "2.21.0",
           "Silk.NET.Assimp": "2.21.0",
           "Silk.NET.Vulkan.Extensions.EXT": "2.21.0",
           "Silk.NET.Vulkan.Extensions.KHR": "2.21.0",
-          "SixLabors.ImageSharp": "3.1.4"
+          "SixLabors.ImageSharp": "3.1.4",
+          "System.Drawing.Common": "8.0.4"
         },
         "runtime": {
           "App75241305.dll": {}
@@ -42,6 +41,22 @@
           }
         }
       },
+      "Microsoft.Win32.SystemEvents/8.0.0": {
+        "runtime": {
+          "lib/net8.0/Microsoft.Win32.SystemEvents.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net8.0/Microsoft.Win32.SystemEvents.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
+          }
+        }
+      },
       "NLog/5.3.2": {
         "runtime": {
           "lib/netstandard2.0/NLog.dll": {
@@ -50,12 +65,6 @@
           }
         }
       },
-      "SharpFont/4.0.1": {
-        "dependencies": {
-          "SharpFont.Dependencies": "2.6.0"
-        }
-      },
-      "SharpFont.Dependencies/2.6.0": {},
       "Silk.NET/2.21.0": {
         "dependencies": {
           "Silk.NET.Core": "2.21.0",
@@ -283,6 +292,17 @@
         }
       },
       "System.Buffers/4.5.1": {},
+      "System.Drawing.Common/8.0.4": {
+        "dependencies": {
+          "Microsoft.Win32.SystemEvents": "8.0.0"
+        },
+        "runtime": {
+          "lib/net8.0/System.Drawing.Common.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.424.16911"
+          }
+        }
+      },
       "System.Memory/4.5.5": {},
       "System.Numerics.Vectors/4.5.0": {},
       "System.Runtime.CompilerServices.Unsafe/6.0.0": {},
@@ -468,26 +488,19 @@
       "path": "microsoft.extensions.dependencymodel/8.0.0",
       "hashPath": "microsoft.extensions.dependencymodel.8.0.0.nupkg.sha512"
     },
+    "Microsoft.Win32.SystemEvents/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9opKRyOKMCi2xJ7Bj7kxtZ1r9vbzosMvRrdEhVhDz8j8MoBGgB+WmC94yH839NPH+BclAjtQ/pyagvi/8gDLkw==",
+      "path": "microsoft.win32.systemevents/8.0.0",
+      "hashPath": "microsoft.win32.systemevents.8.0.0.nupkg.sha512"
+    },
     "NLog/5.3.2": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-cQRQZuDMjSyMe9EQBnI9v55YAMMz8GAfFd6fFJ6tc/kXnG7Hze8p1I8MgvWSBG6E36wA8vSxRrlm8uSIG+SENg==",
       "path": "nlog/5.3.2",
       "hashPath": "nlog.5.3.2.nupkg.sha512"
-    },
-    "SharpFont/4.0.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-yoFLcuWMYdBGB4YLq3bvzrctItJIb+EuK7C7PGgBzqsKxx5UXUwTce64kbvuDQWlMf6p4uQwDm5t2rQdZ9EkyA==",
-      "path": "sharpfont/4.0.1",
-      "hashPath": "sharpfont.4.0.1.nupkg.sha512"
-    },
-    "SharpFont.Dependencies/2.6.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-MuR0lFIZI1pSw0QAgdzK0teIUkkMjh4Q/3Hm06BQKuOiSmbJCglox5Ny+8XK6VQDkOrw5cuMw85K3HdTEYWk+w==",
-      "path": "sharpfont.dependencies/2.6.0",
-      "hashPath": "sharpfont.dependencies.2.6.0.nupkg.sha512"
     },
     "Silk.NET/2.21.0": {
       "type": "package",
@@ -635,6 +648,13 @@
       "sha512": "sha512-Rw7ijyl1qqRS0YQD/WycNst8hUUMgrMH4FCn1nNm27M4VxchZ1js3fVjQaANHO5f3sN4isvP4a+Met9Y4YomAg==",
       "path": "system.buffers/4.5.1",
       "hashPath": "system.buffers.4.5.1.nupkg.sha512"
+    },
+    "System.Drawing.Common/8.0.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3G4xpa8mUYGzEF0HlswlBArAFywHJIzsZoB5hU4yMlnYHaabj/lg019BwbyyYBxj0aoM7Cz+jdlgUemeno9LOQ==",
+      "path": "system.drawing.common/8.0.4",
+      "hashPath": "system.drawing.common.8.0.4.nupkg.sha512"
     },
     "System.Memory/4.5.5": {
       "type": "package",

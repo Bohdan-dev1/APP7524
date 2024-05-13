@@ -54,14 +54,6 @@
               "target": "Package",
               "version": "[5.3.2, )"
             },
-            "SharpFont": {
-              "target": "Package",
-              "version": "[4.0.1, )"
-            },
-            "SharpFont.Dependencies": {
-              "target": "Package",
-              "version": "[2.6.0, )"
-            },
             "Silk.NET": {
               "target": "Package",
               "version": "[2.21.0, )"
@@ -81,6 +73,10 @@
             "SixLabors.ImageSharp": {
               "target": "Package",
               "version": "[3.1.4, )"
+            },
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[8.0.4, )"
             }
           },
           "imports": [

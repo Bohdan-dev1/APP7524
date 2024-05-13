@@ -1,6 +1,9 @@
 ﻿using App75241305.Engine;
-using Silk.NET.Vulkan;
 using Silk.NET.Maths;
+
+//Import UI Elements
+using App75241305.Accets.UI;
+using Silk.NET.Vulkan;
 
 namespace App75241305.Engine
 
@@ -13,12 +16,14 @@ namespace App75241305.Engine
         protected VkAPI vkAPI;
         public void Main()
         {
-            BuildUI();
+            
             vkAPI = new VkAPI(this);
             if (!vkAPI.GetStatusInit()) {
                 Console.WriteLine("Error Init API Vulkan");
                 return;
             }
+
+            
 
         }
 
@@ -65,7 +70,7 @@ namespace App75241305.Engine
             return temp.ToArray();
         }
 
-          private void BuildUI()
+          public void BuildUI()
         {
 
 
@@ -90,7 +95,7 @@ namespace App75241305.Engine
         new Vertex { pos = new Vector3D<float>(-75f,75f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f)},
             });
 
-
+           new TextLable(new Vector4D<ushort>(255,0,0,255), new Vector4D<ushort>(255, 255, 255, 255), "Hello world,\n Привіт світ, 子にちわ");
         }
 
 
