@@ -38,7 +38,8 @@ struct Vertex
     public Vector3D<float> pos;
     public Vector4D<float> color;
     public Vector2D<float> textCoord;
-    public float texturingFlag;
+
+    public int TextureIndex;
 
     public static VertexInputBindingDescription GetBindingDescription()
     {
@@ -81,8 +82,8 @@ struct Vertex
             {
                 Binding = 0,
                 Location = 3,
-                Format = Format.R32Sfloat,
-                Offset = (uint)Marshal.OffsetOf<Vertex>(nameof(texturingFlag)),
+                Format = Format.R32Sint,
+                Offset = (uint)Marshal.OffsetOf<Vertex>(nameof(TextureIndex)),
             }
         };
 
@@ -109,7 +110,7 @@ unsafe class VkAPI
 
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
-    bool EnableValidationLayers = true;
+    bool EnableValidationLayers = false;
 
     private readonly string[] validationLayers = new[]
     {
@@ -159,7 +160,10 @@ unsafe class VkAPI
     private Image textureImage;
     private DeviceMemory textureImageMemory;
     private ImageView textureImageView;
+    private uint DectritorsCountTextures = 256;
+    private List<ImageView> textureImagesView = new List<ImageView>();
     private Sampler textureSampler;
+    private List<Sampler> textureSampls = new List<Sampler>();
 
     private Buffer vertexBuffer;
     private DeviceMemory vertexBufferMemory;
@@ -171,6 +175,7 @@ unsafe class VkAPI
 
     private DescriptorPool descriptorPool;
     private DescriptorSet[]? descriptorSets;
+    private DescriptorSet[]? descriptorTexturesSets;
 
     private CommandBuffer[]? commandBuffers;
 
@@ -183,15 +188,18 @@ unsafe class VkAPI
 
     private bool frameBufferResized = false;
     private int[] frameSize = new int[2];
-    private bool statusInit {  get; set; }
+    private bool statusInit { get; set; }
 
     private Vertex[] vertices = new Vertex[1024];
 
     private ushort[] indices = new ushort[1024];
-    
+
     public VkAPI(Engine linkEngine)
     {
         this.linkEngine = linkEngine;
+        this.linkEngine.BuildUI();
+        this.vertices = this.linkEngine.GetVertex();
+        this.indices = this.linkEngine.GetIndexArray();
         this.Run();
     }
 
@@ -213,7 +221,7 @@ unsafe class VkAPI
         var options = WindowOptions.DefaultVulkan with
         {
             Size = new Vector2D<int>(WIDTH, HEIGHT),
-            Title = "Vulkan API/ PID -> " + currentProcess.Id ,
+            Title = "Vulkan API/ PID -> " + currentProcess.Id,
         };
 
         window = Window.Create(options);
@@ -252,6 +260,7 @@ unsafe class VkAPI
         CreateTextureImage();
         CreateTextureImageView();
         CreateTextureSampler();
+        SemplingAllTexturesGen();
         CreateVertexBuffer();
         CreateIndexBuffer();
         CreateUniformBuffers();
@@ -260,13 +269,11 @@ unsafe class VkAPI
         CreateCommandBuffers();
         CreateSyncObjects();
         
+
     }
 
     private void MainLoop()
     {
-        this.linkEngine.BuildUI();
-        this.vertices = this.linkEngine.GetVertex();
-        this.indices = this.linkEngine.GetIndexArray();
         window!.Render += DrawFrame;
         window!.Run();
         vk!.DeviceWaitIdle(device);
@@ -376,6 +383,16 @@ unsafe class VkAPI
         CreateCommandBuffers();
 
         imagesInFlight = new Fence[swapChainImages!.Length];
+    }
+
+    private void SemplingAllTexturesGen ()
+    {
+        foreach (byte[] Texture in this.linkEngine.GetTexturesGen()){
+            CreateTextureImage(TextureBytes: Texture);
+            CreateTextureImageView();
+            CreateTextureSampler();
+        }
+        
     }
 
     private void CreateInstance()
@@ -739,7 +756,7 @@ unsafe class VkAPI
         DescriptorSetLayoutBinding samplerLayoutBinding = new()
         {
             Binding = 1,
-            DescriptorCount = 1,
+            DescriptorCount = DectritorsCountTextures,
             DescriptorType = DescriptorType.CombinedImageSampler,
             PImmutableSamplers = null,
             StageFlags = ShaderStageFlags.FragmentBit,
@@ -928,9 +945,10 @@ unsafe class VkAPI
                 BasePipelineHandle = default
             };
 
-            if (vk!.CreateGraphicsPipelines(device, default, 1, pipelineInfo, null, out graphicsPipeline) != Result.Success)
+            var res = vk!.CreateGraphicsPipelines(device, default, 1, pipelineInfo, null, out graphicsPipeline);
+            if (res != Result.Success)
             {
-                throw new Exception("failed to create graphics pipeline!");
+                throw new Exception("failed to create graphics pipeline! " + res);
             }
         }
 
@@ -1018,10 +1036,16 @@ unsafe class VkAPI
         return FindSupportedFormat(new[] { Format.D32Sfloat, Format.D32SfloatS8Uint, Format.D24UnormS8Uint }, ImageTiling.Optimal, FormatFeatureFlags.DepthStencilAttachmentBit);
     }
 
-    public void CreateTextureImage(String pathTexture = "")
+    public void CreateTextureImage(String pathTexture = "", byte[] TextureBytes = null)
     {
-        using var img = SixLabors.ImageSharp.Image.Load<SixLabors.ImageSharp.PixelFormats.Rgba32>(pathTexture == "" ? ".\\Assets\\Textures\\def.png" : pathTexture);
-
+        var img = SixLabors.ImageSharp.Image.Load<SixLabors.ImageSharp.PixelFormats.Rgba32>(pathTexture == "" ? ".\\Assets\\Textures\\def.png" : pathTexture);
+        
+        if(TextureBytes != null)
+        {
+            var streamTexture = new MemoryStream(TextureBytes);
+            img = SixLabors.ImageSharp.Image.Load<SixLabors.ImageSharp.PixelFormats.Rgba32>(streamTexture);
+        }
+        
         ulong imageSize = (ulong)(img.Width * img.Height * img.PixelType.BitsPerPixel / 8);
 
         Buffer stagingBuffer = default;
@@ -1046,6 +1070,7 @@ unsafe class VkAPI
     private void CreateTextureImageView()
     {
         textureImageView = CreateImageView(textureImage, Format.R8G8B8A8Srgb, ImageAspectFlags.ColorBit);
+        this.textureImagesView.Add(textureImageView);
     }
 
     private void CreateTextureSampler()
@@ -1075,6 +1100,7 @@ unsafe class VkAPI
             {
                 throw new Exception("failed to create texture sampler!");
             }
+            this.textureSampls.Add(*textureSamplerPtr);
         }
     }
 
@@ -1086,13 +1112,6 @@ unsafe class VkAPI
             Image = image,
             ViewType = ImageViewType.Type2D,
             Format = format,
-            //Components =
-            //    {
-            //        R = ComponentSwizzle.Identity,
-            //        G = ComponentSwizzle.Identity,
-            //        B = ComponentSwizzle.Identity,
-            //        A = ComponentSwizzle.Identity,
-            //    },
             SubresourceRange =
                 {
                     AspectMask = aspectFlags,
@@ -1109,7 +1128,7 @@ unsafe class VkAPI
         {
             throw new Exception("failed to create image views!");
         }
-
+        
         return imageView;
     }
 
@@ -1311,7 +1330,7 @@ unsafe class VkAPI
             new DescriptorPoolSize()
             {
                 Type = DescriptorType.CombinedImageSampler,
-                DescriptorCount = (uint)swapChainImages!.Length,
+                DescriptorCount = (uint)(DectritorsCountTextures * swapChainImages!.Length),
             }
         };
 
@@ -1335,6 +1354,7 @@ unsafe class VkAPI
         }
     }
 
+
     private void CreateDescriptorSets()
     {
         var layouts = new DescriptorSetLayout[swapChainImages!.Length];
@@ -1353,9 +1373,10 @@ unsafe class VkAPI
             descriptorSets = new DescriptorSet[swapChainImages.Length];
             fixed (DescriptorSet* descriptorSetsPtr = descriptorSets)
             {
-                if (vk!.AllocateDescriptorSets(device, allocateInfo, descriptorSetsPtr) != Result.Success)
+                var res = vk!.AllocateDescriptorSets(device, allocateInfo, descriptorSetsPtr);
+                if (res != Result.Success)
                 {
-                    throw new Exception("failed to allocate descriptor sets!");
+                    throw new Exception("failed to allocate descriptor sets! " + res);
                 }
             }
         }
@@ -1371,15 +1392,21 @@ unsafe class VkAPI
 
             };
 
-            DescriptorImageInfo imageInfo = new()
+            DescriptorImageInfo[] imageInfos = new DescriptorImageInfo[100];
+            for (int j = 0; j < this.textureImagesView.Count; j++)
             {
-                ImageLayout = ImageLayout.ShaderReadOnlyOptimal,
-                ImageView = textureImageView,
-                Sampler = textureSampler,
-            };
+                imageInfos[j] = new DescriptorImageInfo
+                {
+                    ImageLayout = ImageLayout.ShaderReadOnlyOptimal,
+                    ImageView = this.textureImagesView[j],
+                    Sampler = this.textureSampls[j]
+                };
+            }
 
-            var descriptorWrites = new WriteDescriptorSet[]
+            fixed (DescriptorImageInfo* imageInfosPtr = imageInfos)
             {
+                var descriptorWrites = new WriteDescriptorSet[]
+{
                 new()
                 {
                     SType = StructureType.WriteDescriptorSet,
@@ -1397,15 +1424,19 @@ unsafe class VkAPI
                     DstBinding = 1,
                     DstArrayElement = 0,
                     DescriptorType = DescriptorType.CombinedImageSampler,
-                    DescriptorCount = 1,
-                    PImageInfo = &imageInfo,
+                    DescriptorCount = (uint)this.textureImagesView.Count,
+                    PImageInfo = imageInfosPtr,
                 }
             };
 
             fixed (WriteDescriptorSet* descriptorWritesPtr = descriptorWrites)
-            {
-                vk!.UpdateDescriptorSets(device, (uint)descriptorWrites.Length, descriptorWritesPtr, 0, null);
+                {
+                    vk!.UpdateDescriptorSets(device, (uint)descriptorWrites.Length, descriptorWritesPtr, 0, null);
+                }
+
             }
+
+
         }
 
     }
@@ -1651,17 +1682,18 @@ unsafe class VkAPI
             proj = Matrix4X4.CreateOrthographic(swapChainExtent.Width, swapChainExtent.Height, 0.1f, 10.0f),
         };
         ubo.proj.M22 *= -1;
-    
+
         void* data;
-        vk!.MapMemory(device, uniformBuffersMemory![currentImage], 0,(ulong)Unsafe.SizeOf<UniformBufferObject>(), 0, &data);
+        vk!.MapMemory(device, uniformBuffersMemory![currentImage], 0, (ulong)Unsafe.SizeOf<UniformBufferObject>(), 0, &data);
         new Span<UniformBufferObject>(data, (int)(ulong)Unsafe.SizeOf<UniformBufferObject>())[0] = ubo;
         vk!.UnmapMemory(device, uniformBuffersMemory![currentImage]);
 
     }
 
+
+
     private void DrawFrame(double delta)
     {
-
         vk!.WaitForFences(device, 1, inFlightFences![currentFrame], true, ulong.MaxValue);
 
         uint imageIndex = 0;
@@ -1714,9 +1746,10 @@ unsafe class VkAPI
 
         vk!.ResetFences(device, 1, inFlightFences[currentFrame]);
 
-        if (vk!.QueueSubmit(graphicsQueue, 1, submitInfo, inFlightFences[currentFrame]) != Result.Success)
+        result = vk!.QueueSubmit(graphicsQueue, 1, submitInfo, inFlightFences[currentFrame]);
+        if (result != Result.Success)
         {
-            throw new Exception("failed to submit draw command buffer!");
+            throw new Exception($"Failed to submit draw command buffer: {result}");
         }
 
         var swapChains = stackalloc[] { swapChain };

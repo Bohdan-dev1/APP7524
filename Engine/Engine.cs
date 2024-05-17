@@ -4,6 +4,7 @@ using Silk.NET.Maths;
 //Import UI Elements
 using App75241305.Accets.UI;
 using Silk.NET.Vulkan;
+using System.Security.Cryptography;
 
 namespace App75241305.Engine
 
@@ -12,6 +13,7 @@ namespace App75241305.Engine
     {
         private List<Vertex> vertices = new List<Vertex>();
         private List<ushort[]> indexListVertex = new List<ushort[]>();
+        protected List<byte[]> Textures = new List<byte[]>();
 
         protected VkAPI vkAPI;
         public void Main()
@@ -60,6 +62,14 @@ namespace App75241305.Engine
             return this.vertices.ToArray();
         }
 
+        public void AddTexture(byte[] Texture)
+        {
+            this.Textures.Add(Texture);
+        }
+
+        public List<byte[]> GetTexturesGen()
+        { return this.Textures; }
+
         public ushort[] GetIndexArray ()
         {
             List<ushort> temp = new List<ushort>();
@@ -75,27 +85,36 @@ namespace App75241305.Engine
 
 
             AddOBJ(new Vertex[] {
-                        new Vertex { pos = new Vector3D<float>(-125f,-75f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f)},
-        new Vertex { pos = new Vector3D<float>(65f, -75f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f)},
-        new Vertex { pos = new Vector3D<float>(65f,85f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f)},
-        new Vertex { pos = new Vector3D<float>(-125f,85f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f)},
+                        new Vertex { pos = new Vector3D<float>(-125f,-75f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f), TextureIndex = -1},
+        new Vertex { pos = new Vector3D<float>(65f, -75f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f), TextureIndex = -1},
+        new Vertex { pos = new Vector3D<float>(65f,85f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f), TextureIndex = -1},
+        new Vertex { pos = new Vector3D<float>(-125f,85f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f), TextureIndex = -1},
             });
+
 
             AddOBJ(new Vertex[] {
-                        new Vertex { pos = new Vector3D<float>(-20f,-20f, -1.2f), color = new Vector4D<float>(0.0f, 1.0f ,0.0f , 1.0f),  textCoord = new Vector2D<float>(1.0f, 0.0f), texturingFlag = 1f},
-        new Vertex { pos = new Vector3D<float>(20f, -20f, -1.2f), color = new Vector4D<float>(0.0f, 1.0f ,0.0f , 1.0f), textCoord = new Vector2D<float>(0.0f, 0.0f), texturingFlag = 1f},
-        new Vertex { pos = new Vector3D<float>(20f,20f, -1.2f), color = new Vector4D<float>(0.0f, 1.0f ,0.0f , 1.0f), textCoord = new Vector2D<float>(0.0f, 1.0f), texturingFlag = 1f},
-        new Vertex { pos = new Vector3D<float>(-20f,20f, -1.2f), color = new Vector4D<float>(0.0f, 1.0f ,0.0f , 1.0f), textCoord = new Vector2D<float>(1.0f, 1.0f), texturingFlag = 1f},
+                        new Vertex { pos = new Vector3D<float>(-75f,-75f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.2f) , TextureIndex = -1},
+        new Vertex { pos = new Vector3D<float>(75f,-75f, -1.0f), color = new Vector4D<float>(1.0f, 1.0f , 0.0f , 0.2f), TextureIndex = -1},
+        new Vertex { pos = new Vector3D<float>(75f,75f, -1.0f), color =new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f), TextureIndex = -1},
+        new Vertex { pos = new Vector3D<float>(-75f,75f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f), TextureIndex = -1},
             });
 
+            new TextLable(this, new Vector4D<ushort>(255, 0, 0, 255), new Vector4D<ushort>(255, 255, 255, 0), "Hello world,\n Привіт світ, 子にちわ");
             AddOBJ(new Vertex[] {
-                        new Vertex { pos = new Vector3D<float>(-75f,-75f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.2f) },
-        new Vertex { pos = new Vector3D<float>(75f,-75f, -1.0f), color = new Vector4D<float>(1.0f, 1.0f , 0.0f , 0.2f)},
-        new Vertex { pos = new Vector3D<float>(75f,75f, -1.0f), color =new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f)},
-        new Vertex { pos = new Vector3D<float>(-75f,75f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f)},
+                        new Vertex { pos = new Vector3D<float>(-200f,-120f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.2f),  textCoord = new Vector2D<float>(1.0f, 0.0f), TextureIndex = 1},
+        new Vertex { pos = new Vector3D<float>(-200f,-200f, -1.0f), color = new Vector4D<float>(1.0f, 1.0f , 0.0f , 0.2f),  textCoord = new Vector2D<float>(0.0f, 0.0f), TextureIndex = 1},
+        new Vertex { pos = new Vector3D<float>(-100f,-200f, -1.0f), color =new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f),  textCoord = new Vector2D<float>(0.0f, 1.0f), TextureIndex = 1},
+        new Vertex { pos = new Vector3D<float>(-100f,-120f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f),  textCoord = new Vector2D<float>(1.0f, 1.0f), TextureIndex = 1},
             });
 
-           new TextLable(new Vector4D<ushort>(255,0,0,255), new Vector4D<ushort>(255, 255, 255, 255), "Hello world,\n Привіт світ, 子にちわ");
+            new TextLable(this, new Vector4D<ushort>(255, 0, 0, 255), new Vector4D<ushort>(255, 255, 255, 0), "TEST");
+            AddOBJ(new Vertex[] {
+                        new Vertex { pos = new Vector3D<float>(-300f,-120f, -0.2f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.2f),  textCoord = new Vector2D<float>(1.0f, 0.0f), TextureIndex = 2},
+        new Vertex { pos = new Vector3D<float>(-300f,-200f, -0.2f), color = new Vector4D<float>(1.0f, 1.0f , 0.0f , 0.2f),  textCoord = new Vector2D<float>(0.0f, 0.0f), TextureIndex = 2},
+        new Vertex { pos = new Vector3D<float>(-210f,-200f, -0.2f), color =new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f),  textCoord = new Vector2D<float>(0.0f, 1.0f), TextureIndex = 2},
+        new Vertex { pos = new Vector3D<float>(-210f,-120f, -0.2f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f),  textCoord = new Vector2D<float>(1.0f, 1.0f), TextureIndex = 2},
+            });
+
         }
 
 

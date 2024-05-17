@@ -19,10 +19,11 @@ namespace App75241305.Accets.UI
         private FontStyle fontStyle;
         private int textureWidth;
         private int textureHeight;
-        private Bitmap RenderedTexture; 
+        private Bitmap RenderedTexture;
+        private byte[] Texture;
 
 
-        public TextLable(Vector4D<ushort> color, Vector4D<ushort> BGcolor, string text, int size = 24, string type = "Regular", string NameFont = "Roboto-", bool SaveCopyFile = false)
+        public TextLable(Engine.Engine engine, Vector4D<ushort> color, Vector4D<ushort> BGcolor, string text, int size = 24, string type = "Regular", string NameFont = "Roboto-", bool SaveCopyFile = false)
         {
             fontCollection.AddFontFile(PathFonts + NameFont + type + ExtendFile);
             fontFamily = fontCollection.Families[0];
@@ -60,7 +61,11 @@ namespace App75241305.Accets.UI
                             graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
                             graphics.DrawString(text, font, brush, PointF.Empty);
                         }
-                        
+
+                        MemoryStream memoryStream = new MemoryStream();
+                        RenderedTexture.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
+                        engine.AddTexture(memoryStream.ToArray());
+                        memoryStream.Close();
                         if (SaveCopyFile) RenderedTexture.Save("rendered_text_texture_debug.png", ImageFormat.Png);
                     } 
                 }
@@ -76,5 +81,7 @@ namespace App75241305.Accets.UI
 
 
         }
+
+        
     }
 }
