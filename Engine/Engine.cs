@@ -99,7 +99,7 @@ namespace App75241305.Engine
         new Vertex { pos = new Vector3D<float>(-75f,75f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f), TextureIndex = -1},
             });
 
-            new TextLable(this, new Vector4D<ushort>(255, 0, 0, 255), new Vector4D<ushort>(255, 255, 255, 0), "Hello world,\n Привіт світ, 子にちわ");
+            new TextLable(this, new Vector4D<ushort>(255, 0, 0, 255), new Vector4D<ushort>(255, 255, 255, 0), "Hello world,\n1234");
             AddOBJ(new Vertex[] {
                         new Vertex { pos = new Vector3D<float>(-200f,-120f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.2f),  textCoord = new Vector2D<float>(1.0f, 0.0f), TextureIndex = 1},
         new Vertex { pos = new Vector3D<float>(-200f,-200f, -1.0f), color = new Vector4D<float>(1.0f, 1.0f , 0.0f , 0.2f),  textCoord = new Vector2D<float>(0.0f, 0.0f), TextureIndex = 1},
