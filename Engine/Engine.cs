@@ -18,20 +18,16 @@ namespace App75241305.Engine
         protected VkAPI vkAPI;
         public void Main()
         {
-            
             vkAPI = new VkAPI(this);
             if (!vkAPI.GetStatusInit()) {
                 Console.WriteLine("Error Init API Vulkan");
                 return;
             }
-
-            
-
         }
 
-        protected void AddOBJ(Vertex[] vertex)
+        public void AddOBJ(Vertex[] vertex)
         {
-            foreach(Vertex v in vertex) this.vertices.Add(v);
+            foreach(Vertex vertexArr in vertex)  this.vertices.Add(vertexArr);
             ushort[] arrayDraw = new ushort[6];
 
 
@@ -84,7 +80,7 @@ namespace App75241305.Engine
         {
 
 
-            AddOBJ(new Vertex[] {
+            /*AddOBJ(new Vertex[] {
                         new Vertex { pos = new Vector3D<float>(-125f,-75f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f), TextureIndex = -1},
         new Vertex { pos = new Vector3D<float>(65f, -75f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f), TextureIndex = -1},
         new Vertex { pos = new Vector3D<float>(65f,85f, -2.0f), color = new Vector4D<float>(0.0f, 0.0f , 1.0f , 1.0f), TextureIndex = -1},
@@ -93,13 +89,13 @@ namespace App75241305.Engine
 
 
             AddOBJ(new Vertex[] {
-                        new Vertex { pos = new Vector3D<float>(-75f,-75f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.2f) , TextureIndex = -1},
-        new Vertex { pos = new Vector3D<float>(75f,-75f, -1.0f), color = new Vector4D<float>(1.0f, 1.0f , 0.0f , 0.2f), TextureIndex = -1},
-        new Vertex { pos = new Vector3D<float>(75f,75f, -1.0f), color =new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f), TextureIndex = -1},
-        new Vertex { pos = new Vector3D<float>(-75f,75f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f), TextureIndex = -1},
+                        new Vertex { pos = new Vector3D<float>(-60f, -60f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.2f) , TextureIndex = -1},
+        new Vertex { pos = new Vector3D<float>(60f,-60f, -1.0f), color = new Vector4D<float>(1.0f, 1.0f , 0.0f , 0.2f), TextureIndex = -1},
+        new Vertex { pos = new Vector3D<float>(60f,60f, -1.0f), color =new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f), TextureIndex = -1},
+        new Vertex { pos = new Vector3D<float>(-60f,60f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f), TextureIndex = -1},
             });
 
-            new TextLable(this, new Vector4D<ushort>(255, 0, 0, 255), new Vector4D<ushort>(255, 255, 255, 0), "Hello world,\n Привіт світ, 子にちわ");
+            new TextLable(this, new Vector4D<ushort>(255, 0, 0, 255), new Vector4D<ushort>(255, 255, 255, 0), "Hello world,\n 123");
             AddOBJ(new Vertex[] {
                         new Vertex { pos = new Vector3D<float>(-200f,-120f, -1.0f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.2f),  textCoord = new Vector2D<float>(1.0f, 0.0f), TextureIndex = 1},
         new Vertex { pos = new Vector3D<float>(-200f,-200f, -1.0f), color = new Vector4D<float>(1.0f, 1.0f , 0.0f , 0.2f),  textCoord = new Vector2D<float>(0.0f, 0.0f), TextureIndex = 1},
@@ -113,8 +109,9 @@ namespace App75241305.Engine
         new Vertex { pos = new Vector3D<float>(-300f,-200f, -0.2f), color = new Vector4D<float>(1.0f, 1.0f , 0.0f , 0.2f),  textCoord = new Vector2D<float>(0.0f, 0.0f), TextureIndex = 2},
         new Vertex { pos = new Vector3D<float>(-210f,-200f, -0.2f), color =new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f),  textCoord = new Vector2D<float>(0.0f, 1.0f), TextureIndex = 2},
         new Vertex { pos = new Vector3D<float>(-210f,-120f, -0.2f), color = new Vector4D<float>(1.0f, 0.0f , 0.0f , 0.7f),  textCoord = new Vector2D<float>(1.0f, 1.0f), TextureIndex = 2},
-            });
-
+            });*/
+            AddOBJ(new BoxDraw(this, "TextLable", SizeBoxL: [120, 120], PositionL: [0, 0], BackgroundColor: new Vector4D<float>(1.0f, 0.0f, 1.0f, 1.0f), ZIndex: 0.1f, TextureIndex: 1, Text: "Hello World").GetGroupeVertex() );
+            //new BoxDraw(this, "TextLable", SizeBoxL: [120,120], PositionL: [0,0], BackgroundColor: new Vector4D<float>(1.0f, 0.0f, 1.0f, 1.0f), ZIndex: 2.0f);
         }
 
 

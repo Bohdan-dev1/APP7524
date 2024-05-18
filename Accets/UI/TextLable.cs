@@ -1,12 +1,11 @@
-﻿using App75241305.Engine;
-using Silk.NET.Maths;
+﻿using Silk.NET.Maths;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
 
 namespace App75241305.Accets.UI
 {
-    internal unsafe class TextLable : Engine.Engine
+    internal unsafe class TextLable : BoxDraw
     {
         private Vector4D<ushort> color;
         private Brush brush;
@@ -15,15 +14,24 @@ namespace App75241305.Accets.UI
         private String ExtendFile = ".ttf";
         private PrivateFontCollection fontCollection = new PrivateFontCollection();
         private FontFamily fontFamily;
-        private Font font; 
+        private Font font;
         private FontStyle fontStyle;
-        private int textureWidth;
-        private int textureHeight;
+        public int textureWidth {  get; private set; }
+        public int textureHeight { get; private set; }
         private Bitmap RenderedTexture;
         private byte[] Texture;
+        
 
 
-        public TextLable(Engine.Engine engine, Vector4D<ushort> color, Vector4D<ushort> BGcolor, string text, int size = 24, string type = "Regular", string NameFont = "Roboto-", bool SaveCopyFile = false)
+        public TextLable(
+            Engine.Engine engine, 
+            Vector4D<ushort> color, 
+            Vector4D<ushort> BGcolor, 
+            string text, 
+            int size = 24, 
+            string type = "Regular", 
+            string NameFont = "Roboto-", 
+            bool SaveCopyFile = false)
         {
             fontCollection.AddFontFile(PathFonts + NameFont + type + ExtendFile);
             fontFamily = fontCollection.Families[0];
@@ -66,7 +74,7 @@ namespace App75241305.Accets.UI
                         RenderedTexture.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
                         engine.AddTexture(memoryStream.ToArray());
                         memoryStream.Close();
-                        if (SaveCopyFile) RenderedTexture.Save("rendered_text_texture_debug.png", ImageFormat.Png);
+                        if (SaveCopyFile) RenderedTexture.Save(PathFonts + "\\TEMP\\rendered_text_texture_debug.png", ImageFormat.Png);
                     } 
                 }
 
@@ -76,10 +84,6 @@ namespace App75241305.Accets.UI
             {
                 Console.WriteLine("Error rendering text to texture: " + ex.Message);
             }
-
-
-
-
         }
 
         
