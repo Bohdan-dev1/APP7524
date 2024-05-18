@@ -1485,7 +1485,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Hatsumi_Mihari\\.nuget\\packages\\": {},
+    "C:\\Users\\Mihari\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
@@ -1494,14 +1494,14 @@
       "projectUniqueName": "D:\\VulkanAPI_Csharp\\App75241305\\App75241305\\App75241305.csproj",
       "projectName": "App75241305",
       "projectPath": "D:\\VulkanAPI_Csharp\\App75241305\\App75241305\\App75241305.csproj",
-      "packagesPath": "C:\\Users\\Hatsumi_Mihari\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\Mihari\\.nuget\\packages\\",
       "outputPath": "D:\\VulkanAPI_Csharp\\App75241305\\App75241305\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Hatsumi_Mihari\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Mihari\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -1575,7 +1575,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.205/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
