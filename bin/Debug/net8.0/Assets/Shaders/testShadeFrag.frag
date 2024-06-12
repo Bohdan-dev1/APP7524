@@ -10,7 +10,7 @@ layout(location = 0) out vec4 outColor;
 void main() {
     
     if (TextureIndex >= 0 && TextureIndex < 256){
-        outColor = texture(texSampler[TextureIndex], fragTexCoord);
+        outColor = texture(texSampler[TextureIndex], fragTexCoord) * vec4(0.0, 0.0, 0.0, 0.5);
     }
     else {
         outColor = vec4(fragColor.x, fragColor.y, fragColor.z, fragColor.w);

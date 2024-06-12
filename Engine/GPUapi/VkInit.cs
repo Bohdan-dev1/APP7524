@@ -110,7 +110,7 @@ unsafe class VkAPI
 
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
-    bool EnableValidationLayers = true;
+    bool EnableValidationLayers = false;
 
     private readonly string[] validationLayers = new[]
     {

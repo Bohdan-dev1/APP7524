@@ -10,7 +10,7 @@ namespace App75241305.Accets.UI
         private Vector4D<ushort> color;
         private Brush brush;
         private Vector4D<ushort> BGcolor;
-        private String PathFonts = ".\\Assets\\Textures\\fonts\\";
+        private String PathFonts = "./Assets/Textures/fonts/";
         private String ExtendFile = ".ttf";
         private PrivateFontCollection fontCollection = new PrivateFontCollection();
         private FontFamily fontFamily;
@@ -19,19 +19,21 @@ namespace App75241305.Accets.UI
         public int textureWidth {  get; private set; }
         public int textureHeight { get; private set; }
         private Bitmap RenderedTexture;
-        private byte[] Texture;
+        private byte[] UpdateTexture;
         
 
 
         public TextLable(
             Engine.Engine engine, 
+            int index,
             Vector4D<ushort> color, 
             Vector4D<ushort> BGcolor, 
             string text, 
             int size = 24, 
             string type = "Regular", 
             string NameFont = "Roboto-", 
-            bool SaveCopyFile = false)
+            bool SaveCopyFile = false,
+            bool UpdateFlag = false)
         {
             fontCollection.AddFontFile(PathFonts + NameFont + type + ExtendFile);
             fontFamily = fontCollection.Families[0];
@@ -57,8 +59,8 @@ namespace App75241305.Accets.UI
                         textureWidth = (int)Math.Ceiling(textSize.Width);
                         textureHeight = (int)Math.Ceiling(textSize.Height);
 
-                        Console.WriteLine("Texture Width: " + textureWidth);
-                        Console.WriteLine("Texture Height: " + textureHeight);
+                        //Console.WriteLine("Texture Width: " + textureWidth);
+                        //Console.WriteLine("Texture Height: " + textureHeight);
                     }
 
                     using (RenderedTexture = new Bitmap(textureWidth, textureHeight))
@@ -72,7 +74,9 @@ namespace App75241305.Accets.UI
 
                         MemoryStream memoryStream = new MemoryStream();
                         RenderedTexture.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
-                        engine.AddTexture(memoryStream.ToArray());
+                        if (!UpdateFlag)
+                            engine.AddTexture(memoryStream.ToArray());
+                        else engine.UpdateTextureByIndex(index, memoryStream.ToArray());
                         memoryStream.Close();
                         if (SaveCopyFile) RenderedTexture.Save(PathFonts + "\\TEMP\\rendered_text_texture_debug.png", ImageFormat.Png);
                     } 
